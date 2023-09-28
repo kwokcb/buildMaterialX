@@ -25,7 +25,11 @@ The [buildMaterialX.ipynb](buildMaterialX.ipynb) notebook contains the steps req
 
 The repo can be cloned or forked from and either run locally or in a GitHub Codespace. The snapshots above are from a GitHub Codespace. 
 
-# Limitations
+The cells of the notebook can be (re)run as needed with the caveat that the package imports and the utility to print the logged output be run.
+
+# Caveats
+
+Files can be modified in the source directory and the build rerun to test changes. Note that this will not update the cloned repo.
 
 Remote Codespaces may not support GPU rendering as such trying to execute rendering may result in an error. For example the MaterialX Viewer and Graph Editor cannot be run remotely.
 

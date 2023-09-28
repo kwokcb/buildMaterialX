@@ -16,6 +16,7 @@
 # %%
 import os
 import subprocess
+import sys
 
 rootdir = os.getcwd()
 print('Root folder: ', rootdir)
@@ -69,16 +70,44 @@ os.chdir('build')
 print('Build folder is: ', os.getcwd())
 
 # %% [markdown]
-# ### Setup Build Configuration MaterialX 
+# ### Setup Platform / OS Build 
 # 
-# Go to the build folder and run CMake to set up build configuration
+# As required platform / OS pre-requisites should be installed. 
+# 
+# For example for Linux see [this page](https://code.visualstudio.com/docs/cpp/config-linux) which will be required when running a Codespace on remote host. gcc should already be installed but can be checked using by running `gcc -v`
 
 # %%
-buildCmd = 'cmake -DMATERIALX_BUILD_VIEWER=ON -DMATERIALX_BUILD_GRAPH_EDITOR=ON -DMATERIALX_BUILD_PYTHON=ON -DMATERIALX_WARNINGS_AS_ERRORS=ON'
-osOptions = ' -G "Visual Studio 16 2019" -A "x64" -DCMAKE_BUILD_TYPE= RelWithDebInfo ' 
-result = os.system(buildCmd + osOptions + '.. > build.log 2>&1')
-print('Finished build: %s' % ('Success' if result == 0 else 'Failed'))
-printLog('build.log')
+# Pre-build setup for Linux
+if sys.platform == 'linux':
+    os.system('sudo apt-get update')
+    os.system('sudo apt-get install xorg-dev mesa-utils')
+
+# %% [markdown]
+# ### Setup Build Configuration MaterialX 
+# 
+# Go to the build folder and run CMake to set up build configuration.
+
+# %%
+os.chdir(rootdir)
+os.chdir('MaterialX')
+os.chdir('build')
+
+# Build setup
+buildSetupCmd = 'cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON  -DMATERIALX_BUILD_VIEWER=ON -DMATERIALX_BUILD_GRAPH_EDITOR=ON -DMATERIALX_BUILD_PYTHON=ON -DMATERIALX_WARNINGS_AS_ERRORS=ON'
+
+# Check the current OS for build setup options
+osOptions = ''
+if sys.platform == 'win32':
+    osOptions = ' -G "Visual Studio 16 2019" -A "x64" -DCMAKE_BUILD_TYPE=RelWithDebInfo ' 
+# else check if linux
+elif sys.platform == 'linux':
+    osOptions = ''
+else:
+    osOptions = ''
+
+result = os.system(buildSetupCmd + osOptions + ' -S .. > buildsetup.log 2>&1')
+print('Finished build setup: %s' % ('Success' if result == 0 else 'Failed'))
+printLog('buildsetup.log')
 
 # %% [markdown]
 # ### Build MaterialX

@@ -15101,116 +15101,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     }
     init_mathjax();
     </script>
-    <!-- End of mathjax configuration --><script type="module">
-  document.addEventListener("DOMContentLoaded", async () => {
-    const diagrams = document.querySelectorAll(".jp-Mermaid > pre.mermaid");
-    // do not load mermaidjs if not needed
-    if (!diagrams.length) {
-      return;
-    }
-    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.esm.min.mjs")).default;
-
-    mermaid.initialize({
-      maxTextSize: 100000,
-      startOnLoad: false,
-      fontFamily: window
-        .getComputedStyle(document.body)
-        .getPropertyValue("--jp-ui-font-family"),
-      theme: document.querySelector("body[data-jp-theme-light='true']")
-        ? "default"
-        : "dark",
-    });
-
-    let _nextMermaidId = 0;
-
-    function makeMermaidImage(svg) {
-      const img = document.createElement('img');
-      const maxWidth = svg.match(/max-width: (\d+)/);
-      if (maxWidth && maxWidth[1]) {
-        const width = parseInt(maxWidth[1]);
-        if (width && !Number.isNaN(width) && Number.isFinite(width)) {
-          img.width = width;
-        }
-      }
-      img.setAttribute('src', `data:image/svg+xml,${encodeURIComponent(svg)}`);
-      return img;
-    }
-
-    async function makeMermaidError(text) {
-      let errorMessage = '';
-      try {
-        await mermaid.parse(text);
-      } catch (err) {
-        errorMessage = `${err}`;
-      }
-
-      const result = document.createElement('details');
-      const summary = document.createElement('summary');
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      code.innerText = text;
-      pre.appendChild(code);
-      summary.appendChild(pre);
-      result.appendChild(summary);
-
-      const warning = document.createElement('pre');
-      warning.innerText = errorMessage;
-      result.appendChild(warning);
-      return result;
-    }
-
-    async function renderOneMarmaid(src) {
-      const id = `jp-mermaid-${_nextMermaidId++}`;
-      const parent = src.parentNode;
-      let raw = src.textContent.trim();
-      const el = document.createElement("div");
-      el.style.visibility = "hidden";
-      document.body.appendChild(el);
-      let result = null;
-      try {
-        const { svg } = await mermaid.render(id, raw, el);
-        result = makeMermaidImage(svg);
-      } catch (err) {
-        parent.classList.add("jp-mod-warning");
-        result = await makeMermaidError(raw);
-      } finally {
-        el.remove();
-      }
-      parent.classList.add("jp-RenderedMermaid");
-      parent.appendChild(result);
-    }
-
-    void Promise.all([...diagrams].map(renderOneMarmaid));
-  });
-</script>
-<style>
-  .jp-RenderedMarkdown .jp-Mermaid:not(.jp-RenderedMermaid) {
-    display: none;
-  }
-  .jp-RenderedMarkdown .jp-RenderedMermaid.jp-mod-warning {
-    width: auto;
-    padding: 10px;
-    border: var(--jp-border-width) solid var(--jp-warn-color2);
-    border-radius: var(--jp-border-radius);
-    color: var(--jp-ui-font-color1);
-    font-size: var(--jp-ui-font-size1);
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  .jp-RenderedMarkdown .jp-RenderedMermaid.jp-mod-warning details > pre {
-    margin-top: 1em;
-  }
-  .jp-RenderedMarkdown .jp-RenderedMermaid.jp-mod-warning summary {
-    color: var(--jp-warn-color2);
-  }
-  .jp-RenderedMarkdown .jp-RenderedMermaid.jp-mod-warning summary > pre {
-    display: inline-block;
-  }
-  .jp-RenderedMermaid > .mermaid {
-    display: none;
-  }
-</style>
-<!-- End of mermaid configuration --></head>
+    <!-- End of mathjax configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 
 <div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
@@ -15250,6 +15141,7 @@ for Linux and Mac as well.</p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">rootdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Root folder: &#39;</span><span class="p">,</span> <span class="n">rootdir</span><span class="p">)</span>
@@ -15475,7 +15367,39 @@ Finished getting submodules: 0
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Setup-Build-Configuration-MaterialX">Setup Build Configuration MaterialX<a class="anchor-link" href="#Setup-Build-Configuration-MaterialX">&#182;</a></h3><p>Go to the build folder and run CMake to set up build configuration</p>
+<h3 id="Setup-Platform-/-OS-Build">Setup Platform / OS Build<a class="anchor-link" href="#Setup-Platform-/-OS-Build">&#182;</a></h3><p>As required platform / OS pre-requisites should be installed.</p>
+<p>For example for Linux see <a href="https://code.visualstudio.com/docs/cpp/config-linux">this page</a> which will be required when running a Codespace on remote host. gcc should already be installed but can be checked using by running <code>gcc -v</code></p>
+
+</div>
+</div>
+</div>
+</div><div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Pre-build setup for Linux</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;sudo apt-get update&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;sudo apt-get install xorg-dev mesa-utils&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Setup-Build-Configuration-MaterialX">Setup Build Configuration MaterialX<a class="anchor-link" href="#Setup-Build-Configuration-MaterialX">&#182;</a></h3><p>Go to the build folder and run CMake to set up build configuration.</p>
 
 </div>
 </div>
@@ -15488,11 +15412,26 @@ Finished getting submodules: 0
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">buildCmd</span> <span class="o">=</span> <span class="s1">&#39;cmake -DMATERIALX_BUILD_VIEWER=ON -DMATERIALX_BUILD_GRAPH_EDITOR=ON -DMATERIALX_BUILD_PYTHON=ON -DMATERIALX_WARNINGS_AS_ERRORS=ON&#39;</span>
-<span class="n">osOptions</span> <span class="o">=</span> <span class="s1">&#39; -G &quot;Visual Studio 16 2019&quot; -A &quot;x64&quot; -DCMAKE_BUILD_TYPE= RelWithDebInfo &#39;</span> 
-<span class="n">result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">buildCmd</span> <span class="o">+</span> <span class="n">osOptions</span> <span class="o">+</span> <span class="s1">&#39;.. &gt; build.log 2&gt;&amp;1&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished build: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;Success&#39;</span> <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;Failed&#39;</span><span class="p">))</span>
-<span class="n">printLog</span><span class="p">(</span><span class="s1">&#39;build.log&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">rootdir</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;MaterialX&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">)</span>
+
+<span class="c1"># Build setup</span>
+<span class="n">buildSetupCmd</span> <span class="o">=</span> <span class="s1">&#39;cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON  -DMATERIALX_BUILD_VIEWER=ON -DMATERIALX_BUILD_GRAPH_EDITOR=ON -DMATERIALX_BUILD_PYTHON=ON -DMATERIALX_WARNINGS_AS_ERRORS=ON&#39;</span>
+
+<span class="c1"># Check the current OS for build setup options</span>
+<span class="n">osOptions</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
+    <span class="n">osOptions</span> <span class="o">=</span> <span class="s1">&#39; -G &quot;Visual Studio 16 2019&quot; -A &quot;x64&quot; -DCMAKE_BUILD_TYPE=RelWithDebInfo &#39;</span> 
+<span class="c1"># else check if linux</span>
+<span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
+    <span class="n">osOptions</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">osOptions</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">buildSetupCmd</span> <span class="o">+</span> <span class="n">osOptions</span> <span class="o">+</span> <span class="s1">&#39; -S .. &gt; buildsetup.log 2&gt;&amp;1&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished build setup: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;Success&#39;</span> <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;Failed&#39;</span><span class="p">))</span>
+<span class="n">printLog</span><span class="p">(</span><span class="s1">&#39;buildsetup.log&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15512,13 +15451,7 @@ Finished getting submodules: 0
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Finished build: Success
-CMake Warning:
-  Ignoring extra path from command line:
-
-   &#34;D:/Work/materialx/buildMaterialX/MaterialX/build/RelWithDebInfo&#34;
-
-
+<pre>Finished build setup: Success
 -- Selecting Windows SDK version 10.0.19041.0 to target Windows 10.0.19045.
 -- Setting namespace to &#39;MaterialX_v1_38_9&#39;
 -- NanoGUI v0.2.0 
@@ -15556,7 +15489,7 @@ Call Stack (most recent call first):
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
 -- Configuring done (0.5s)
--- Generating done (2.3s)
+-- Generating done (2.1s)
 -- Build files have been written to: D:/Work/materialx/buildMaterialX/MaterialX/build
 
 </pre>
@@ -15615,7 +15548,6 @@ This warning is for project developers.  Use -Wno-dev to suppress it.
 Microsoft (R) Build Engine version 16.11.2+f32259642 for .NET Framework
 Copyright (C) Microsoft Corporation. All rights reserved.
 
-  1&gt;Checking Build System
   glfw_objects.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\source\MaterialXView\external\NanoGUI\ext\glfw\src\glfw_objects.dir\RelWithDebInfo\glfw_objects.lib
   MaterialXCore.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\lib\RelWithDebInfo\MaterialXCore.lib
   MaterialXFormat.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\lib\RelWithDebInfo\MaterialXFormat.lib
@@ -15643,7 +15575,6 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   PyMaterialXRender.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\bin\RelWithDebInfo\PyMaterialXRender.cp310-win_amd64.pyd
   PyMaterialXRenderGlsl.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\bin\RelWithDebInfo\PyMaterialXRenderGlsl.cp310-win_amd64.pyd
   PyMaterialXRenderOsl.vcxproj -&gt; D:\Work\materialx\buildMaterialX\MaterialX\build\bin\RelWithDebInfo\PyMaterialXRenderOsl.cp310-win_amd64.pyd
-  Building Custom Rule D:/Work/materialx/buildMaterialX/MaterialX/CMakeLists.txt
   1&gt;
   -- Install configuration: &#34;RelWithDebInfo&#34;
   -- Up-to-date: D:/Work/materialx/buildMaterialX/MaterialX/build/installed/./LICENSE

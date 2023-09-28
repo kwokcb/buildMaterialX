@@ -53,7 +53,7 @@ Below are snapshots from the execution of various steps (cells) of the notebook.
 4. Build
     The times to build appears to be faster for codespace from the single sample test which took about 15 minutes using `Codespaces` and 25 minutes using `Colab`. While not comparable to desktop build times, this with the caveat that this was attempted with resources available with the "free" tier of each service. 
     
-    Note that it was useful to be able to see resource usage in `Colab`` while building. The build log is shown on the right.
+    Note that it was useful to be able to see resource usage in `Colab` while building. The build log is shown on the right.
 
     <img src="./images/MaterialX_colab_build.png">
 
@@ -69,6 +69,6 @@ All output is logged to "log" files for later inspection.
 
 Files can be modified in the source directory and the build rerun to test changes. Note that this will not update the cloned repo.
 
-Remote `Codespaces`` and `Colab` may not support GPU rendering (vs compute) as such trying to execute rendering may result in an error. For example the MaterialX Viewer and Graph Editor cannot be run remotely.
+Remote `Codespaces` and `Colab` may not support GPU rendering (vs compute) as such trying to execute rendering may result in an error. For example the MaterialX Viewer and Graph Editor cannot be run remotely.
 
 
